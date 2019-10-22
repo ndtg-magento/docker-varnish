@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+write_docker_to_host() {
+    echo "HOST_DOMAIN=$1"
+    HOST_DOMAIN=$1
+
+    echo "INTERNAL_HOST_IP=$(ip route show default | awk '/default/ {print $3}')"
+    INTERNAL_HOST_IP=$(ip route show default | awk '/default/ {print $3}')
+
+    echo "$INTERNAL_HOST_IP\t$HOST_DOMAIN >> /etc/hosts"
+    echo -e "$INTERNAL_HOST_IP\t$HOST_DOMAIN" >> /etc/hosts
+}
