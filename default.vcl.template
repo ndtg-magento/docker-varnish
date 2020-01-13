@@ -20,7 +20,6 @@ backend default {
 
 acl purge {
     "localhost";
-    "host.docker.internal";
     "${VARNISH_PURGE_HOST}";
 }
 
