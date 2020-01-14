@@ -11,10 +11,10 @@ backend default {
     .first_byte_timeout = 600s;
     .probe = {
         .url = "${VARNISH_HEALTH_CHECK_FILE}";
-        .timeout = 2s;
-        .interval = 5s;
-        .window = 10;
-        .threshold = 5;
+        .timeout = 8s;
+        .interval = 16s;
+        .window = 16;
+        .threshold = 8;
    }
 }
 
