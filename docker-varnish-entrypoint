@@ -3,15 +3,15 @@ set -e
 
 # Waiting for sevice ready
 _service_waiting() {
-  HOST=$1
-  PORT=$2
+    HOST=$1
+    PORT=$2
 
-  until nc -z -v -w30 ${HOST} ${PORT}
-  do
-      note "Waiting for ${HOST}:${PORT} connection..."
-      # wait for 5 seconds before check again
-      sleep 5
-  done
+    until nc -vzw 2 ${HOST} ${PORT}
+    do
+      echo "Waiting for ${HOST}:${PORT} connection..."
+      # wait for 2 seconds before check again
+      sleep 2
+    done
 }
 
 # Check service is ready

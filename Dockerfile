@@ -3,7 +3,7 @@ FROM varnish:latest
 RUN apt-get update && apt-get install -y \
     gettext-base \
     iputils-ping \
-    iproute2
+    iproute2 netcat
 
 COPY ./docker/rootfs /rootfs
 
