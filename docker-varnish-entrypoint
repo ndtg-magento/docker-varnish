@@ -1,24 +1,48 @@
 #!/bin/sh
 set -e
 
-bash convert-params
+# Waiting for sevice ready
+_service_waiting() {
+  HOST=$1
+  PORT=$2
 
-# wait for 5 seconds before check again
-sleep 5
+  until nc -z -v -w30 ${HOST} ${PORT}
+  do
+      note "Waiting for ${HOST}:${PORT} connection..."
+      # wait for 5 seconds before check again
+      sleep 5
+  done
+}
 
-# this will check if the first argument is a flag
-# but only works if all arguments require a hyphenated flag
-# -v; -SL; -f arg; etc will work, but not arg1 arg2
-if [ "$#" -eq 0 ] || [ "${1#-}" != "$1" ]; then
-    set -- varnishd \
-	    -F \
-	    -f /etc/varnish/default.vcl \
-	    -a http=:80,HTTP \
-	    -a proxy=:8443,PROXY \
-	    -p feature=+http2 \
-	    -s malloc,$VARNISH_SIZE \
-	    "$@"
-fi
+# Check service is ready
+_check_service() {
+    if [ -z "${VARNISH_BACKEND_PORT}" ]; then
+        VARNISH_BACKEND_PORT=80
+    fi
 
-exec "$@"
+    _service_waiting "${VARNISH_BACKEND_HOST}" ${VARNISH_BACKEND_PORT}
+}
 
+_main() {
+    . convert-params
+
+    _check_service
+
+    # this will check if the first argument is a flag
+    # but only works if all arguments require a hyphenated flag
+    # -v; -SL; -f arg; etc will work, but not arg1 arg2
+    if [ "$#" -eq 0 ] || [ "${1#-}" != "$1" ]; then
+        set -- varnishd \
+          -F \
+          -f /etc/varnish/default.vcl \
+          -a http=:80,HTTP \
+          -a proxy=:8443,PROXY \
+          -p feature=+http2 \
+          -s malloc,$VARNISH_SIZE \
+          "$@"
+    fi
+
+    exec "$@"
+}
+
+_main
