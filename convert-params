@@ -9,15 +9,15 @@ VCL=/etc/varnish/default.vcl
 rm -rf "${VCL}"
 
 if [ -z "${VARNISH_BACKEND_HOST}" ]; then
-			VARNISH_BACKEND_HOST=localhost
+			export VARNISH_BACKEND_HOST=localhost
 fi
 
 if [ -z "${VARNISH_BACKEND_PORT}" ]; then
-			VARNISH_BACKEND_PORT=80
+			export VARNISH_BACKEND_PORT=80
 fi
 
 if [ -z "${VARNISH_HEALTH_CHECK_FILE}" ]; then
-			VARNISH_HEALTH_CHECK_FILE=/pub/health_check.php
+			export VARNISH_HEALTH_CHECK_FILE=/pub/health_check.php
 fi
 
 if [ -f "${TEMPLATE_VCL}" ]; then
